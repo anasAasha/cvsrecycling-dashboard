@@ -175,9 +175,7 @@ const Items = () => {
   
       const formData = new FormData();
       formData.append("image", editedPicFile);
-  
- 
-  
+
   
       dispatch(updateItem(editedItem.id, editedItem))
         .then(() => {
