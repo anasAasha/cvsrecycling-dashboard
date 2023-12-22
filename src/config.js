@@ -1,7 +1,7 @@
 // config.jsssssssssssss
 
 const config = {
-    apiUrl: 'http://cvsrecyclingc.com', 
+    apiUrl: 'https://cvsrecyclingc.com', 
     apiKey: 'api-key',
   };
   
