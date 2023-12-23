@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Dropdown from "react-bootstrap/Dropdown";
-import { FaEdit, FaTrash, FaSearch, FaImage } from "react-icons/fa";
+import { FaEdit, FaTrash, FaImage } from "react-icons/fa";
 import { TbSettingsStar } from "react-icons/tb";
-import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllItems,
@@ -16,9 +12,14 @@ import {
   getAllUnits,
 } from "../redux/actions/itemActions";
 import { StyleSheetManager } from "styled-components";
-
 import config from "../config";
 import { Link } from "react-router-dom";
+import NumberInput from "../components/common/input/NumberInput";
+import TextInput from "../components/common/input/TextInput";
+import FileInput from "../components/common/input/FileInput";
+import DropdownSelect from "../components/common/input/DropdownSelect";
+import CustomModal from "../components/utils/CustomModal";
+import GenericDataTable from "../components/common/reuseable/GenericDataTable";
 
 const Items = () => {
   const apiUrl = config.apiUrl;
@@ -69,7 +70,7 @@ const Items = () => {
   };
   const handleCloseAddModal = () => {
     setShowAddModal(false);
-    
+
     setValidation({
       itemName: true,
       price: true,
@@ -106,7 +107,7 @@ const Items = () => {
   const handlePicFileChange = (e) => {
     if (e.target.files.length > 0) {
       const file = e.target.files[0];
-      
+
       setEditedItem((prevItem) => ({
         ...prevItem,
         image: file.name,
@@ -123,7 +124,6 @@ const Items = () => {
       fetch(`${apiUrl}/image/add`, requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          
           setEditedItem((prevItem) => ({
             ...prevItem,
             image: result.image,
@@ -169,14 +169,11 @@ const Items = () => {
   };
   const handleUpdate = () => {
     const isValid = validateForm(editedItem);
-  
+
     if (isValid) {
-      
-  
       const formData = new FormData();
       formData.append("image", editedPicFile);
 
-  
       dispatch(updateItem(editedItem.id, editedItem))
         .then(() => {
           console.log("Item updated successfully");
@@ -185,11 +182,11 @@ const Items = () => {
         .catch((error) => {
           console.error("Error updating item:", error);
         });
-  
+
       handleCloseEditModal();
     }
   };
-  
+
   const handleDelete = (item) => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${item.name}?`
@@ -272,161 +269,96 @@ const Items = () => {
 
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
-    <section className="section">
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">
-                <TbSettingsStar size={"2rem"} className="me-2" />
-                Items
-              </h5>
-              <p>Items Of Scrap</p>
-              <div >
-                <div className="d-flex justify-content-between align-items-center mb-5">
-                  <Button variant="primary" onClick={handleShowAddModal}>
-                    Add Items
-                    <AiOutlinePlus size={"1.2rem"} className="ms-2" />
-                  </Button>
-                  <div className="d-flex align-items-center">
-                    <FaSearch style={{ marginRight: "5px" }} />
-                    <Form.Control
-                      type="text"
-                      placeholder="Search Mechanics"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DataTable
-                  columns={columns}
-                  data={
-                    items &&
-                    items.filter(
-                      (item) =>
-                        item &&
-                        item.name &&
-                        item.name
-                          .toLowerCase()
-                          .includes(searchText.toLowerCase())
-                    )
-                  }
-                  pagination
-                
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section className="section">
+        <GenericDataTable
+          title="Items"
+          icon={<TbSettingsStar size={"2rem"} className="me-2" />}
+          data={items &&
+            items.filter(
+              (item) =>
+                item &&
+                item.name &&
+                item.name
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase())
+            )}
+          columns={columns}
+          handleShowAddModal={handleShowAddModal}
+          searchText={searchText}
+          onSearchChange={setSearchText}
+        />
 
-      {/* Add Item Modal */}
-      <Modal show={showAddModal} onHide={handleCloseAddModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add Item </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form encType="multipart/form-data">
-            <Form.Group>
-              <Form.Label>Item Name </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Item Name"
+        {/* Add Item Modal */}
+        <CustomModal
+          show={showAddModal}
+          handleClose={handleCloseAddModal}
+          handleAction={handleAdd}
+          title="Add Item"
+          formContent={
+            <Form encType="multipart/form-data">
+              <TextInput
+                label="Item Name"
                 value={newItem.Item_name}
                 onChange={(e) =>
                   setNewItem({ ...newItem, Item_name: e.target.value })
                 }
-                isInvalid={!validation.itemName}
+                placeholder="Enter Item Name"
+                isValid={validation.itemName}
+                feedback="Please enter a valid item name."
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid item name.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Default Pic</Form.Label>
-              <Form.Control type="file" onChange={handlePicFileChange} />
-            </Form.Group>
-           
-            <Form.Group>
-              <Form.Label>Price per Weight</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter Price per Weight"
+
+              <FileInput
+                label="Defult Pic"
+                onChange={handlePicFileChange}
+                secLable="Select Item Image"
+              />
+              <NumberInput
+                label="Price per Weight"
                 value={newItem.price}
                 onChange={(e) =>
                   setNewItem({ ...newItem, price: e.target.value })
                 }
-                isInvalid={!validation.price}
+                placeholder="Enter Price per Weight"
+                isValid={validation.price}
+                feedback="Please enter a valid price."
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid price.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Unit of Weight</Form.Label>
-              <div>
-                <Dropdown>
-                  <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    {newItem.unit_id
-                      ? unitsOfWeight.find(
-                          (unit) => unit.id === newItem.unit_id
-                        ).unitName
-                      : "Select Unit of Weight"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {unitsOfWeight.map((unit) => (
-                      <Dropdown.Item
-                        key={unit.id}
-                        onClick={() => handleSelectUnit(unit.id)}
-                      >
-                        {unit.unitName}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-                {!validation.unitOfWeight && (
-                  <Form.Text className="text-danger">
-                    Please select a valid unit of weight.
-                  </Form.Text>
-                )}
-              </div>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseAddModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleAdd}>
-            Add Item
-          </Button>
-        </Modal.Footer>
-      </Modal>
+              <DropdownSelect
+                label="Unit of Weight"
+                options={unitsOfWeight}
+                selectedValue={
+                  newItem.unit_id
+                    ? unitsOfWeight.find((unit) => unit.id === newItem.unit_id)
+                        .unitName
+                    : ""
+                }
+                onSelect={handleSelectUnit}
+                isValid={validation.unitOfWeight}
+                validationText="Please select a valid unit of weight."
+              />
+            </Form>
+          }
+          actionButtonText="Add Item"
+        />
 
-      {/* Edit Item Modal */}
-      <Modal show={showEditModal} onHide={handleCloseEditModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Item </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Item Name </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Item Name"
+        <CustomModal
+          show={showEditModal}
+          handleClose={handleCloseEditModal}
+          handleAction={handleUpdate}
+          title="Edit Item"
+          formContent={
+            <Form>
+              <TextInput
+                label="Item Name"
                 value={editedItem.Item_name}
                 onChange={(e) =>
                   setEditedItem({ ...editedItem, Item_name: e.target.value })
                 }
-                isInvalid={!validation.itemName}
+                placeholder="Enter Item Name"
+                isValid={validation.itemName}
+                feedback="Please enter a valid item name."
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid Item Name.
-              </Form.Control.Feedback>
-            </Form.Group>
-           
-            <Form.Group  className="my-4">
+
+              <Form.Group className="my-4">
                 {editedItem.image && (
                   <img
                     src={editedItem.image}
@@ -451,90 +383,64 @@ const Items = () => {
                 </div>
               </Form.Group>
 
-
-            <Form.Group>
-              <Form.Label>Price per Weight</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter Price per Weight"
+              <NumberInput
+                label="Price per Weight"
                 value={editedItem.price}
                 onChange={(e) =>
-                  setEditedItem({
-                    ...editedItem,
-                    price: e.target.value,
-                  })
+                  setEditedItem({ ...editedItem, price: e.target.value })
                 }
-                isInvalid={!validation.price}
+                placeholder="Enter Price per Weight"
+                isValid={validation.price}
+                feedback="Please enter a valid price."
               />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid price.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Unit of Weight</Form.Label>
-              <div>
-                <Dropdown>
-                  <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    {editedItem.unit_id
-                      ? editedItem.unitName
-                      : "Select Unit of Weight"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {unitsOfWeight.map((unit) => (
-                      <Dropdown.Item
-                        key={unit.id}
-                        onClick={() =>
-                          setEditedItem((prevEditedItem) => ({
-                            ...prevEditedItem,
-                            unit_id: unit.id,
-                            unitName: unit.unitName,
-                          }))
-                        }
-                      >
-                        {unit.unitName}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEditModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal
-        show={showImageModal}
-        onHide={handleCloseImageModal}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Image Preview</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Preview"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                margin: "auto",
-                display: "block",
-              }}
-            />
-          )}
-        </Modal.Body>
-      </Modal>
-    </section>
+
+              <DropdownSelect
+                label="Unit of Weight"
+                options={unitsOfWeight}
+                selectedValue={
+                  editedItem.unit_id
+                    ? unitsOfWeight.find(
+                        (unit) => unit.id === editedItem.unit_id
+                      ).unitName
+                    : ""
+                }
+                onSelect={(unit_id) =>
+                  setEditedItem({ ...editedItem, unit_id })
+                }
+                isValid={validation.unitOfWeight}
+                validationText="Please select a valid unit of weight."
+              />
+            </Form>
+          }
+          actionButtonText="Save Changes"
+        />
+
+        <Modal
+          show={showImageModal}
+          onHide={handleCloseImageModal}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Image Preview</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  margin: "auto",
+                  display: "block",
+                }}
+              />
+            )}
+          </Modal.Body>
+        </Modal>
+      </section>
     </StyleSheetManager>
   );
 };

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
-import { Modal, Button, Form, Badge } from "react-bootstrap";
-import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { Form, Badge } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import {
   createDriver,
@@ -14,6 +12,10 @@ import {
 import { CiDeliveryTruck } from "react-icons/ci";
 import config from "../config";
 import { StyleSheetManager } from "styled-components";
+import CustomModal from "../components/utils/CustomModal";
+import GenericDataTable from "../components/common/reuseable/GenericDataTable";
+import TextInput from "../components/common/input/TextInput";
+import FileInput from "../components/common/input/FileInput";
 
 const Drivers = () => {
   const apiUrl = config.apiUrl;
@@ -215,7 +217,6 @@ const Drivers = () => {
             image: result.image,
           }));
           setEditedPicFile(result.image);
-          
         })
         .catch((error) => console.log("error", error));
     } else {
@@ -231,217 +232,164 @@ const Drivers = () => {
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
       <section className="section">
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">
-                  <CiDeliveryTruck size={"2rem"} className="me-2" />
-                  Drivers
-                </h5>
-                <div >
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <Button variant="primary" onClick={handleShowAddModal}>
-                      Add Drivers
-                      <AiOutlinePlus size={"1.2rem"} className="ms-2" />
-                    </Button>
-                    <div className="d-flex align-items-center">
-                      <FaSearch style={{ marginRight: "5px" }} />
-                      <Form.Control
-                        type="text"
-                        placeholder="Search Drivers"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <DataTable
-                    columns={columns}
-                    data={driversList.filter(
-                      (driver) =>
-                        driver.full_name &&
-                        driver.full_name
-                          .toLowerCase()
-                          .includes(searchText.toLowerCase())
-                    )}
-                    pagination
+        <GenericDataTable
+          title="Drivers"
+          icon={<CiDeliveryTruck size={"2rem"} className="me-2" />}
+          data={driversList.filter(
+            (driver) =>
+              driver.full_name &&
+              driver.full_name.toLowerCase().includes(searchText.toLowerCase())
+          )}
+          columns={columns}
+          handleShowAddModal={handleShowAddModal}
+          searchText={searchText}
+          onSearchChange={setSearchText}
+        />
+        <CustomModal
+          show={showAddModal}
+          handleClose={handleCloseAddModal}
+          handleAction={handleAdd}
+          title="Add Drivers"
+          formContent={
+            <Form>
+              <TextInput
+                label="Drivers Name"
+                value={newDriver.full_name}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    full_name: e.target.value,
+                  })
+                }
+                placeholder="Enter Drivers Name"
+              />
+              <TextInput
+                label="Address"
+                value={newDriver.address}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    address: e.target.value,
+                  })
+                }
+                placeholder="Enter Address"
+              />
+              <TextInput
+                label="Contact No"
+                value={newDriver.phone_no || ""}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    phone_no: e.target.value,
+                  })
+                }
+                placeholder="Enter Contact No"
+              />
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter Email"
+                  value={newDriver.email}
+                  onChange={(e) =>
+                    setNewDriver({
+                      ...newDriver,
+                      email: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+              <FileInput
+                label="Driver Image (optional)"
+                onChange={handlePicFileChange}
+                secLable="Select Driver Image"
+              />
+            </Form>
+          }
+          actionButtonText="Save"
+        />
+        <CustomModal
+          show={showEditModal}
+          handleClose={handleCloseEditModal}
+          handleAction={handleUpdate}
+          title="Edit Drivers"
+          formContent={
+            <Form>
+              <TextInput
+                label="Drivers Name"
+                value={newDriver.full_name}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    full_name: e.target.value,
+                  })
+                }
+                placeholder="Enter Drivers Name"
+              />
+              <TextInput
+                label="Address"
+                value={newDriver.address}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    address: e.target.value,
+                  })
+                }
+                placeholder="Enter Address"
+              />
+              <TextInput
+                label="Contact No"
+                value={newDriver.address}
+                onChange={(e) =>
+                  setNewDriver({
+                    ...newDriver,
+                    phone_no: e.target.value,
+                  })
+                }
+                placeholder="Enter Contact No"
+              />
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter Email"
+                  value={newDriver.email}
+                  onChange={(e) =>
+                    setNewDriver({
+                      ...newDriver,
+                      email: e.target.value,
+                    })
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="my-4">
+                {newDriver.image && (
+                  <img
+                    src={newDriver.image}
+                    alt="item"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      marginBottom: "10px",
+                    }}
                   />
+                )}
+                <div className="custom-file mx-2 ">
+                  <Form.Control
+                    type="file"
+                    onChange={handlePicFileChange}
+                    className="custom-file-input"
+                  />
+                  <Form.Label className="custom-file-label">
+                    Change Driver Image
+                  </Form.Label>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Modal show={showAddModal} onHide={handleCloseAddModal} size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title>Add Drivers</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group>
-                <Form.Label>Drivers Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Drivers Name"
-                  value={newDriver.full_name}
-                  required
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      full_name: e.target.value,
-                    })
-                  }
-                />
-                <Form.Text className="text-muted">
-                  Please enter a valid Drivers Name.
-                </Form.Text>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Address"
-                  value={newDriver.address}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      address: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Contact No</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Contact No"
-                  value={newDriver.phone_no || ""}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      phone_no: e.target.value,
-                    })
-                  }
-                />
-
-                <Form.Text className="text-muted">
-                  Please enter a valid Contact No with digits only.
-                </Form.Text>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter Email"
-                  value={newDriver.email}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      email: e.target.value,
-                    })
-                  }
-                />
-                <Form.Text className="text-muted">
-                  Please enter a valid Email.
-                </Form.Text>
-              </Form.Group>
-              <Form.Group controlId="driverImage">
-                <Form.Label>Driver Image (optional)</Form.Label>
-                <Form.Control type="file" onChange={handlePicFileChange} />
-                <Form.Text className="text-muted">
-                  Upload an image if needed.
-                </Form.Text>
               </Form.Group>
             </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseAddModal}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleAdd}>
-              Save
-            </Button>
-          </Modal.Footer>
-        </Modal>
-        <Modal show={showEditModal} onHide={handleCloseEditModal} size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Drivers</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group>
-                <Form.Label>Drivers Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Drivers Name"
-                  value={newDriver.full_name}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      full_name: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Address"
-                  value={newDriver.address}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      address: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Contact No</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Contact No"
-                  value={newDriver.phone_no}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      phone_no: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter Email"
-                  value={newDriver.email}
-                  onChange={(e) =>
-                    setNewDriver({
-                      ...newDriver,
-                      email: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="driverImage">
-                <Form.Label>Driver Image (optional)</Form.Label>
-                <Form.Control type="file" onChange={handlePicFileChange} />
-                <Form.Text className="text-muted">
-                  Upload an image if needed.
-                </Form.Text>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseEditModal}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleUpdate}>
-              Save
-            </Button>
-          </Modal.Footer>
-        </Modal>
+          }
+          actionButtonText="Save"
+        />
       </section>
     </StyleSheetManager>
   );

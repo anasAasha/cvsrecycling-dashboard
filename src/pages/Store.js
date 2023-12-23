@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import DataTable from 'react-data-table-component';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
+import { FaEdit, FaTrash} from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-
 import {
   getAllStores,
   createStore, 
@@ -11,11 +9,9 @@ import {
   deleteStore, 
 } from '../redux/actions/storeAction'; 
 import { StyleSheetManager } from "styled-components";
-import { AiOutlinePlus } from 'react-icons/ai';
-
 import { MdOutlineStoreMallDirectory } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-
+import GenericDataTable from '../components/common/reuseable/GenericDataTable';
 const Store = () => { 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -156,43 +152,19 @@ const Store = () => {
 
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}><section className="section">
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">
-                <MdOutlineStoreMallDirectory size={'2rem'} className='me-2' />
-                Stores
-              </h5>
-              <div>
-                <div className="d-flex justify-content-between align-items-center mb-5">
-                  <Button variant="primary" onClick={handleShowAddModal}>
-                    Add Store
-                    <AiOutlinePlus size={'1.2rem'} className='ms-2'/>
-                  </Button>
-                  <div className="d-flex align-items-center">
-                    <FaSearch style={{ marginRight: '5px' }} />
-                    <Form.Control
-                      type="text"
-                      placeholder="Search Stores"
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DataTable
-                  columns={columns}
-                  data={storesList.filter((store) =>
-                    (store.full_name && store.full_name.toLowerCase().includes(searchText.toLowerCase()))
-                  )}
-             
-                  pagination
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
+      <GenericDataTable
+          title="Stores"
+          icon={  <MdOutlineStoreMallDirectory size={'2rem'} className='me-2' />}
+          data={storesList.filter((store) =>
+            (store.full_name && store.full_name.toLowerCase().includes(searchText.toLowerCase()))
+          )}
+          columns={columns}
+          handleShowAddModal={handleShowAddModal}
+          searchText={searchText}
+          onSearchChange={setSearchText}
+        />
+
       <Modal show={showAddModal} onHide={handleCloseAddModal}>
         <Modal.Header closeButton>
           <Modal.Title>Add Store</Modal.Title>

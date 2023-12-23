@@ -1,7 +1,7 @@
 // Layout.js
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { FaArrowUp } from "react-icons/fa"; // Import the back-to-top icon
+import { FaArrowUp } from "react-icons/fa"; 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Routers from "../../Routers/Routers";

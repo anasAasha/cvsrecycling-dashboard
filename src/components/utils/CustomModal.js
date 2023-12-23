@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button} from "react-bootstrap";
 
 const CustomModal = ({
   show,
@@ -15,7 +15,7 @@ const CustomModal = ({
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>{formContent}</Form>
+        {formContent}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

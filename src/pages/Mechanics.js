@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
-import { Button, Form, Badge, Dropdown } from "react-bootstrap";
-import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
+import { Form, Badge, Dropdown } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import config from "../config";
 import {
@@ -10,11 +9,11 @@ import {
   updateMechanic,
   deleteMechanic,
 } from "../redux/actions/mechanicActions";
-import { AiOutlinePlus } from "react-icons/ai";
 import { GiMechanicGarage } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { StyleSheetManager } from "styled-components";
 import CustomModal from "../components/utils/CustomModal";
+import GenericDataTable from "../components/common/reuseable/GenericDataTable";
 const Mechanics = () => {
   const apiUrl = config.apiUrl;
   const [showAddModal, setShowAddModal] = useState(false);
@@ -108,7 +107,6 @@ const Mechanics = () => {
   };
 
   const handleUpdate = () => {
-   
     const formattedPhoneNo = `${newMechanic.phone_no}`;
     const formData = new FormData();
     formData.append("image", editedPicFile);
@@ -272,7 +270,6 @@ const Mechanics = () => {
       fetch(`${apiUrl}/image/add`, requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          
           setNewMechanic((prevMechanic) => ({
             ...prevMechanic,
             image: result.image,
@@ -294,46 +291,21 @@ const Mechanics = () => {
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
       <section className="section">
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">
-                  <GiMechanicGarage size={"2rem"} className="me-2" />
-                  Mechanics
-                </h5>
-                <div>
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <Button variant="primary" onClick={handleShowAddModal}>
-                      Add Mechanic
-                      <AiOutlinePlus size={"1.2rem"} className="ms-2" />
-                    </Button>
-                    <div className="d-flex align-items-center">
-                      <FaSearch style={{ marginRight: "5px" }} />
-                      <Form.Control
-                        type="text"
-                        placeholder="Search Mechanics"
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <DataTable
-                    columns={columns}
-                    data={mechanicsList.filter(
-                      (mechanic) =>
-                        mechanic.full_name &&
-                        mechanic.full_name
-                          .toLowerCase()
-                          .includes(searchText.toLowerCase())
-                    )}
-                    pagination
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <GenericDataTable
+          title="Mechanics"
+          icon={<GiMechanicGarage size={"2rem"} className="me-2" />}
+          data={mechanicsList.filter(
+            (mechanic) =>
+              mechanic.full_name &&
+              mechanic.full_name
+                .toLowerCase()
+                .includes(searchText.toLowerCase())
+          )}
+          columns={columns}
+          handleShowAddModal={handleShowAddModal}
+          searchText={searchText}
+          onSearchChange={setSearchText}
+        />
         <CustomModal
           show={showAddModal}
           handleClose={() => setShowAddModal(false)}
@@ -475,112 +447,114 @@ const Mechanics = () => {
           title="Edit Mechanic"
           formContent={
             <>
-              <Form.Group controlId="fullName">
-                <Form.Label>Mechanic Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Mechanic Name"
-                  value={newMechanic.full_name}
-                  required
-                  onChange={(e) =>
-                    setNewMechanic({
-                      ...newMechanic,
-                      full_name: e.target.value,
-                    })
-                  }
-                />
-                <Form.Control.Feedback type="invalid">
-                  Please enter a valid Mechanic Name.
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="address">
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Address"
-                  value={newMechanic.shop_address}
-                  onChange={(e) =>
-                    setNewMechanic({
-                      ...newMechanic,
-                      shop_address: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="shopName">
-                <Form.Label>Shop Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Shop Name"
-                  value={newMechanic.shop_name}
-                  onChange={(e) =>
-                    setNewMechanic({
-                      ...newMechanic,
-                      shop_name: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="mechanicImage" className="my-4">
-                {newMechanic.image && (
-                  <img
-                    src={newMechanic.image}
-                    alt="Mechanic"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      marginBottom: "10px",
-                    }}
-                  />
-                )}
-                <div className="custom-file mx-3">
-                  <Form.Control
-                    type="file"
-                    onChange={handlePicFileChange}
-                    className="custom-file-input"
-                  />
-                  <Form.Label className="custom-file-label">
-                    Change Mechanic Image
-                  </Form.Label>
-                </div>
-              </Form.Group>
-
-              <Form.Group controlId="phoneNo">
-                <Form.Label>Contact No</Form.Label>
-                <div className="input-group">
+              <Form>
+                {" "}
+                <Form.Group controlId="fullName">
+                  <Form.Label>Mechanic Name</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Contact No"
-                    value={newMechanic.phone_no}
+                    placeholder="Enter Mechanic Name"
+                    value={newMechanic.full_name}
                     required
                     onChange={(e) =>
                       setNewMechanic({
                         ...newMechanic,
-                        phone_no: e.target.value,
+                        full_name: e.target.value,
                       })
                     }
                   />
-                </div>
-              </Form.Group>
-              <Form.Group controlId="email">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter Email"
-                  value={newMechanic.email}
-                  required
-                  onChange={(e) =>
-                    setNewMechanic({
-                      ...newMechanic,
-                      email: e.target.value,
-                    })
-                  }
-                />
-                <Form.Control.Feedback type="invalid">
-                  Please enter a valid Email address.
-                </Form.Control.Feedback>
-              </Form.Group>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid Mechanic Name.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="address">
+                  <Form.Label>Address</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Address"
+                    value={newMechanic.shop_address}
+                    onChange={(e) =>
+                      setNewMechanic({
+                        ...newMechanic,
+                        shop_address: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="shopName">
+                  <Form.Label>Shop Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Shop Name"
+                    value={newMechanic.shop_name}
+                    onChange={(e) =>
+                      setNewMechanic({
+                        ...newMechanic,
+                        shop_name: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="mechanicImage" className="my-4">
+                  {newMechanic.image && (
+                    <img
+                      src={newMechanic.image}
+                      alt="Mechanic"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        marginBottom: "10px",
+                      }}
+                    />
+                  )}
+                  <div className="custom-file mx-3">
+                    <Form.Control
+                      type="file"
+                      onChange={handlePicFileChange}
+                      className="custom-file-input"
+                    />
+                    <Form.Label className="custom-file-label">
+                      Change Mechanic Image
+                    </Form.Label>
+                  </div>
+                </Form.Group>
+                <Form.Group controlId="phoneNo">
+                  <Form.Label>Contact No</Form.Label>
+                  <div className="input-group">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Contact No"
+                      value={newMechanic.phone_no}
+                      required
+                      onChange={(e) =>
+                        setNewMechanic({
+                          ...newMechanic,
+                          phone_no: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </Form.Group>
+                <Form.Group controlId="email">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter Email"
+                    value={newMechanic.email}
+                    required
+                    onChange={(e) =>
+                      setNewMechanic({
+                        ...newMechanic,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid Email address.
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Form>
             </>
           }
           actionButtonText="Save Changes"
