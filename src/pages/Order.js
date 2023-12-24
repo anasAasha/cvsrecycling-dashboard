@@ -27,6 +27,11 @@ import { getAllDrivers } from "../redux/actions/driverActions";
 import { AiOutlinePlus } from "react-icons/ai";
 import { getAllMechanics } from "../redux/actions/mechanicActions";
 import { getAllItems } from "../redux/actions/itemActions";
+import DropdownSelect from "../components/common/input/DropdownSelect";
+import TextInput from "../components/common/input/TextInput";
+import DateInput from "../components/common/input/DateInput";
+import TimeInput from "../components/common/input/TimeInput";
+import TextareaInput from "../components/common/input/TextareaInput";
 
 const Order = () => {
   const dispatch = useDispatch();
@@ -343,7 +348,6 @@ const Order = () => {
       userId: order.user.id,
       item_id: order.item.id,
       item_Name: order.item_Name,
-
       reminder: order.reminder,
       time: order.time,
       date: order.date,
@@ -366,7 +370,6 @@ const Order = () => {
   };
 
   const handleEditOrderSubmit = () => {
-    
     const updatedOrderData = {
       userId: editOrderData.userId,
       item_id: editOrderData.item_id,
@@ -378,9 +381,7 @@ const Order = () => {
       status: editOrderData.status,
     };
 
-  
     dispatch(updateOrder(selectedOrder.id, updatedOrderData)).then(() => {
-     
       handleCloseEditOrderModal();
 
       setForceUpdate((prev) => !prev);
@@ -485,32 +486,25 @@ const Order = () => {
           </Modal.Header>
           <Modal.Body>
             <Form>
-              <Form.Group controlId="formCustNo">
-                <Form.Label>Cust No</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Cust No"
-                  value={invoiceData.cust_no}
-                  onChange={(e) =>
-                    setInvoiceData({ ...invoiceData, cust_no: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formTimeIn">
-                <Form.Label>Time Out</Form.Label>
-                <Form.Control
-                  type="time"
-                  placeholder="Enter Time out"
-                  value={invoiceData.time_out}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      time_out: e.target.value.toString(),
-                    })
-                  }
-                />
-              </Form.Group>
-
+              <TextInput
+                label="Cust No"
+                value={invoiceData.cust_no}
+                onChange={(e) =>
+                  setInvoiceData({ ...invoiceData, cust_no: e.target.value })
+                }
+                placeholder="Enter Cust No"
+              />
+              <TimeInput
+                label="Time Out"
+                value={invoiceData.time_out}
+                onChange={(e) =>
+                  setInvoiceData({
+                    ...invoiceData,
+                    time_out: e.target.value.toString(),
+                  })
+                }
+                placeholder="Enter Time out"
+              />
               <Form.Group controlId="formDriver">
                 <Form.Label>Driver</Form.Label>
                 <Dropdown>
@@ -535,23 +529,19 @@ const Order = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               </Form.Group>
-
               <Row>
                 <Col lg={6}>
-                  <Form.Group controlId="formWeight">
-                    <Form.Label>Weight</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Weight"
-                      value={invoiceData.weight}
-                      onChange={(e) =>
-                        setInvoiceData({
-                          ...invoiceData,
-                          weight: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
+                  <TextInput
+                    label="Weight"
+                    value={invoiceData.weight}
+                    onChange={(e) =>
+                      setInvoiceData({
+                        ...invoiceData,
+                        weight: e.target.value,
+                      })
+                    }
+                    placeholder="Enter Weight"
+                  />
                 </Col>
                 <Col lg={6}>
                   <Form.Group controlId="formPrice">
@@ -572,60 +562,47 @@ const Order = () => {
               </Row>
               <Row>
                 <Col lg={4}>
-                  <Form.Group controlId="formGross">
-                    <Form.Label>Gross</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Gross"
-                      value={invoiceData.gross}
-                      onChange={(e) =>
-                        setInvoiceData({
-                          ...invoiceData,
-                          gross: e.target.value,
-                        })
-                      }
-                    />
-                  </Form.Group>
+                  <TextInput
+                    label="Gross"
+                    value={invoiceData.gross}
+                    onChange={(e) =>
+                      setInvoiceData({
+                        ...invoiceData,
+                        gross: e.target.value,
+                      })
+                    }
+                    placeholder="Enter Gross"
+                  />
                 </Col>
                 <Col lg={4}>
-                  <Form.Group controlId="formTar">
-                    <Form.Label>Tare</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Tar"
-                      value={invoiceData.tar}
-                      onChange={(e) =>
-                        setInvoiceData({ ...invoiceData, tar: e.target.value })
-                      }
-                    />
-                  </Form.Group>
+                  <TextInput
+                    label="Tare"
+                    value={invoiceData.tar}
+                    onChange={(e) =>
+                      setInvoiceData({ ...invoiceData, tar: e.target.value })
+                    }
+                    placeholder="Enter Tare"
+                  />
                 </Col>
                 <Col lg={4}>
-                  <Form.Group controlId="formNet">
-                    <Form.Label>Net</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter Net"
-                      value={invoiceData.net}
-                      onChange={(e) =>
-                        setInvoiceData({ ...invoiceData, net: e.target.value })
-                      }
-                    />
-                  </Form.Group>
+                  <TextInput
+                    label="Net"
+                    value={invoiceData.net}
+                    onChange={(e) =>
+                      setInvoiceData({ ...invoiceData, net: e.target.value })
+                    }
+                    placeholder="Enter Net"
+                  />
                 </Col>
               </Row>
-
-              <Form.Group controlId="formTotal">
-                <Form.Label>Total</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Total"
-                  value={invoiceData.total}
-                  onChange={(e) =>
-                    setInvoiceData({ ...invoiceData, total: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <TextInput
+                label="Total"
+                value={invoiceData.total}
+                onChange={(e) =>
+                  setInvoiceData({ ...invoiceData, total: e.target.value })
+                }
+                placeholder="Enter Total"
+              />
             </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -666,126 +643,76 @@ const Order = () => {
           </Modal.Header>
           <Modal.Body>
             <Form>
-              {/* User Dropdown */}
-              <Form.Group controlId="formUserId">
-                <Form.Label className="text-center">User</Form.Label>
-                <Dropdown className="d-inline-block w-100">
-                  <Dropdown.Toggle
-                    variant="primary"
-                    id="dropdown-user"
-                    className=" w-100"
-                  >
-                    {newOrderData.userId
-                      ? mechanics.find(
-                          (mechanic) => mechanic.id === newOrderData.userId
-                        )?.full_name || "Select User"
-                      : "Select User"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="w-100">
-                    <Dropdown.Item
-                      onClick={() =>
-                        setNewOrderData({ ...newOrderData, userId: "" })
-                      }
-                    >
-                      Select User
-                    </Dropdown.Item>
-                    {mechanics.map((mechanic) => (
-                      <Dropdown.Item
-                        key={mechanic.id}
-                        onClick={() =>
-                          setNewOrderData({
-                            ...newOrderData,
-                            userId: mechanic.id,
-                          })
-                        }
-                      >
-                        {mechanic.full_name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Form.Group>
-
-              {/* Item Dropdown */}
-              <Form.Group controlId="formItemId" size="lg" className="mb-2">
-                <Form.Label>Item</Form.Label>
-                <Dropdown>
-                  <Dropdown.Toggle variant="primary" id="dropdown-item">
-                    {newOrderData.item_id
-                      ? items.find((item) => item.id === newOrderData.item_id)
-                          ?.name || "Select Item"
-                      : "Select Item"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() =>
-                        setNewOrderData({ ...newOrderData, item_id: "" })
-                      }
-                    >
-                      Select Item
-                    </Dropdown.Item>
-                    {items.map((item) => (
-                      <Dropdown.Item
-                        key={item.id}
-                        onClick={() =>
-                          setNewOrderData({ ...newOrderData, item_id: item.id })
-                        }
-                      >
-                        {item.name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Form.Group>
-              <Form.Group controlId="formItemName">
-                <Form.Label>Item Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Item Name"
-                  value={newOrderData.item_Name}
-                  onChange={(e) =>
-                    setNewOrderData({
-                      ...newOrderData,
-                      item_Name: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formDate">
-                <Form.Label>Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Enter Date"
-                  value={newOrderData.date}
-                  onChange={(e) =>
-                    setNewOrderData({ ...newOrderData, date: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formTime">
-                <Form.Label>Time</Form.Label>
-                <Form.Control
-                  type="time"
-                  placeholder="Enter Time"
-                  value={newOrderData.time}
-                  onChange={(e) =>
-                    setNewOrderData({ ...newOrderData, time: e.target.value })
-                  }
-                />
-              </Form.Group>
-            
-              <Form.Group controlId="formNote">
-                <Form.Label>Note</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Enter Note"
-                  value={newOrderData.note}
-                  onChange={(e) =>
-                    setNewOrderData({ ...newOrderData, note: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <DropdownSelect
+                label="Customer"
+                options={mechanics
+                  .filter((mechanic) => !mechanic.is_deleted)
+                  .map((mechanic) => ({
+                    id: mechanic.id,
+                    unitName: mechanic.full_name,
+                  }))}
+                selectedValue={
+                  newOrderData.userId
+                    ? mechanics.find(
+                        (mechanic) => mechanic.id === newOrderData.userId
+                      )?.full_name || "Select Customer"
+                    : "Select Customer"
+                }
+                onSelect={(selectedUserId) =>
+                  setNewOrderData({ ...newOrderData, userId: selectedUserId })
+                }
+              />
+              <DropdownSelect
+                label="Item"
+                options={items.map((item) => ({
+                  id: item.id,
+                  unitName: item.name,
+                }))}
+                selectedValue={
+                  newOrderData.item_id
+                    ? items.find((item) => item.id === newOrderData.item_id)
+                        ?.name || "Select Item"
+                    : "Select Item"
+                }
+                onSelect={(selectedItemId) =>
+                  setNewOrderData({ ...newOrderData, item_id: selectedItemId })
+                }
+              />
+              <TextInput
+                label="Item Name"
+                value={newOrderData.item_Name}
+                onChange={(e) =>
+                  setNewOrderData({
+                    ...newOrderData,
+                    item_Name: e.target.value,
+                  })
+                }
+                placeholder="Enter Item Name"
+              />
+              <DateInput
+                label="Date"
+                value={newOrderData.date}
+                placeholder="Enter Date"
+                onChange={(e) =>
+                  setNewOrderData({ ...newOrderData, date: e.target.value })
+                }
+              />
+              <TimeInput
+                label="Time"
+                value={newOrderData.time}
+                onChange={(e) =>
+                  setNewOrderData({ ...newOrderData, time: e.target.value })
+                }
+                placeholder="Enter Time"
+              />
+              <TextareaInput
+                label="Note"
+                value={newOrderData.note}
+                onChange={(e) =>
+                  setNewOrderData({ ...newOrderData, note: e.target.value })
+                }
+                placeholder="Enter Note"
+              />
             </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -808,43 +735,33 @@ const Order = () => {
           </Modal.Header>
           <Modal.Body>
             <Form>
-              <Form.Group controlId="formReminder">
-                <Form.Label>Reminder</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Enter Reminder"
-                  value={editOrderData.reminder}
-                  onChange={(e) =>
-                    setEditOrderData({
-                      ...editOrderData,
-                      reminder: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formTime">
-                <Form.Label>Time</Form.Label>
-                <Form.Control
-                  type="time"
-                  placeholder="Enter Time"
-                  value={editOrderData.time}
-                  onChange={(e) =>
-                    setEditOrderData({ ...editOrderData, time: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formNote">
-                <Form.Label>Note</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Enter Note"
-                  value={editOrderData.note}
-                  onChange={(e) =>
-                    setEditOrderData({ ...editOrderData, note: e.target.value })
-                  }
-                />
-              </Form.Group>
+              <DateInput
+                label="Reminder"
+                value={editOrderData.reminder}
+                placeholder="Enter Reminder"
+                onChange={(e) =>
+                  setEditOrderData({
+                    ...editOrderData,
+                    reminder: e.target.value,
+                  })
+                }
+              />
+              <TimeInput
+                label="Time"
+                value={editOrderData.time}
+                onChange={(e) =>
+                  setEditOrderData({ ...editOrderData, time: e.target.value })
+                }
+                placeholder="Enter Time"
+              />
+              <TextareaInput
+                label="Note"
+                value={editOrderData.note}
+                onChange={(e) =>
+                  setEditOrderData({ ...editOrderData, note: e.target.value })
+                }
+                placeholder="Enter Note"
+              />
             </Form>
           </Modal.Body>
           <Modal.Footer>
