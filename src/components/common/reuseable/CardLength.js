@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 
 const CardLength = ({ title, icon: IconComponent, data, label }) => {
+  const filteredData = data.filter((item) => !item.is_deleted);
   return (
     <Card>
       <Card.Body>
@@ -14,7 +15,7 @@ const CardLength = ({ title, icon: IconComponent, data, label }) => {
             {IconComponent && <IconComponent size={"2em"} />}
           </div>
           <div className="ps-3">
-            <span className="text-success small pt-1 fw-bold">{data.length}</span>{" "}
+            <span className="text-success small pt-1 fw-bold">{filteredData.length}</span>{" "}
             <span className="text-muted small pt-2 ps-1">{label}</span>
           </div>
         </div>

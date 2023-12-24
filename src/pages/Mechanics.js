@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { StyleSheetManager } from "styled-components";
 import CustomModal from "../components/utils/CustomModal";
 import GenericDataTable from "../components/common/reuseable/GenericDataTable";
+
 const Mechanics = () => {
   const apiUrl = config.apiUrl;
   const [showAddModal, setShowAddModal] = useState(false);
@@ -290,16 +291,17 @@ const Mechanics = () => {
 
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "sortActive"}>
+      
       <section className="section">
+      
         <GenericDataTable
           title="Mechanics"
           icon={<GiMechanicGarage size={"2rem"} className="me-2" />}
           data={mechanicsList.filter(
             (mechanic) =>
               mechanic.full_name &&
-              mechanic.full_name
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
+              mechanic.full_name.toLowerCase().includes(searchText.toLowerCase()) &&
+              !mechanic.is_deleted  
           )}
           columns={columns}
           handleShowAddModal={handleShowAddModal}
