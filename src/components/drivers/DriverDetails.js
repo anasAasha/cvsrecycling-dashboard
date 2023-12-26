@@ -6,6 +6,7 @@ import {
   getAllDrivers,
   updateDriver,
 } from "../../redux/actions/driverActions"; 
+import LazyLoad from "react-lazyload";
 
 const DriverDetails = () => {
   const { id } = useParams();
@@ -68,12 +69,14 @@ const DriverDetails = () => {
               <div className="card">
                 <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
                   {driver.image ? (
+                     <LazyLoad height={200} offset={100}>
                     <img
                       src={driver.image}
                       alt="driver"
                       style={{ width: "360px" }}
                       
                     />
+                    </LazyLoad>
                   ) : (
                     <div
                       style={{

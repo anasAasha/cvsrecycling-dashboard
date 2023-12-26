@@ -19,6 +19,7 @@ import {
 import { MdAccessTime } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
 import { FaImage } from "react-icons/fa";
+import LazyLoad from "react-lazyload";
 function ContactUsMessages() {
   const dispatch = useDispatch();
   const members = useSelector((state) => state.contact.users);
@@ -94,12 +95,14 @@ function ContactUsMessages() {
                     >
                      
                         <div className="d-flex flex-row">
+                        <LazyLoad height={200} offset={100}>
                           <img
                             src={member.image}
                             alt="avatar"
                             className="rounded-circle d-flex align-self-center me-3 shadow-1-strong"
                             width="60"
                           />
+                          </LazyLoad>
                           <div className="pt-1">
                             <p className="fw-bold mb-0 text-light">{member.fullName}</p>
                             <p className="small text-white">
@@ -223,6 +226,7 @@ function ContactUsMessages() {
             <Modal.Title>Image Preview</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          <LazyLoad height={200} offset={100}>
             <img
               src={selectedImage}
               alt="Preview"
@@ -233,6 +237,7 @@ function ContactUsMessages() {
                 display: "block",
               }}
             />
+            </LazyLoad>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="danger" onClick={handleCloseEditModal}>

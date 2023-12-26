@@ -16,6 +16,7 @@ import CustomModal from "../components/utils/CustomModal";
 import GenericDataTable from "../components/common/reuseable/GenericDataTable";
 import TextInput from "../components/common/input/TextInput";
 import FileInput from "../components/common/input/FileInput";
+import LazyLoad from "react-lazyload";
 
 const Drivers = () => {
   const apiUrl = config.apiUrl;
@@ -132,23 +133,24 @@ const Drivers = () => {
       selector: (row) => row.email,
       sortable: true,
     },
-    {
-      name: "Image",
-      cell: (row) => (
-        <div>
-          {row.image ? (
-            <img
-              src={row.image}
-              alt={row.full_name}
-              style={{ width: "50px", height: "50px" }}
-            />
-          ) : (
-            <span>{row.full_name}</span>
-          )}
-        </div>
-      ),
-      sortable: false,
-    },
+    // {
+    //   name: "Image",
+    //   cell: (row) => (
+    //     <div>
+    //       {row.image ? (
+            
+    //         <img
+    //           src={row.image}
+    //           alt={row.full_name}
+    //           style={{ width: "50px", height: "50px" }}
+    //         />
+    //       ) : (
+    //         <span>{row.full_name}</span>
+    //       )}
+    //     </div>
+    //   ),
+    //   sortable: false,
+    // },
     {
       name: "is Deleted",
       cell: (row) => (
@@ -364,6 +366,7 @@ const Drivers = () => {
               </Form.Group>
               <Form.Group className="my-4">
                 {newDriver.image && (
+                   <LazyLoad height={200} offset={100}>
                   <img
                     src={newDriver.image}
                     alt="item"
@@ -374,6 +377,7 @@ const Drivers = () => {
                       marginBottom: "10px",
                     }}
                   />
+                  </LazyLoad>
                 )}
                 <div className="custom-file mx-2 ">
                   <Form.Control

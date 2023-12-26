@@ -6,6 +6,7 @@ import {
   getAllItems,
 
 } from "../../redux/actions/itemActions"; 
+import LazyLoad from "react-lazyload";
 
 const ItemDetails = () => {
   const { id } = useParams();
@@ -41,12 +42,14 @@ const ItemDetails = () => {
               <div className="card">
                 <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
                   {item.image ? (
+                     <LazyLoad height={200} offset={100}>
                     <img
                       src={item.image}
                       alt="item"
                       style={{ width: "360px" }}
                      
                     />
+                    </LazyLoad>
                   ) : (
                     <div
                       style={{

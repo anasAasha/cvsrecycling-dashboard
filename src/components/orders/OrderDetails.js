@@ -3,6 +3,7 @@ import { Col, Row, Tab, Tabs } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../redux/actions/orderAction";
+import LazyLoad from "react-lazyload";
 
 
 const OrderDetails = () => {
@@ -120,11 +121,13 @@ const OrderDetails = () => {
                             Image
                           </div>
                           <div className="col-lg-9 col-md-8">
+                          <LazyLoad height={200} offset={100}>
                             <img
                               src={order.item.image}
                               alt={order.item.item_name}
                               className="img-fluid"
                             />
+                            </LazyLoad>
                           </div>
                         </div>
                             </Col>
@@ -233,6 +236,7 @@ const OrderDetails = () => {
                             {order.images.map((image, index) => (
                               <Row key={index} className="mb-2">
                                 <Col md={12}>
+                                <LazyLoad height={200} offset={100}>
                                 <img
                              
                                 src={image}
@@ -240,6 +244,7 @@ const OrderDetails = () => {
                                 className="img-fluid"
                                 
                               />
+                              </LazyLoad>
                                 </Col>
                               </Row>
                               

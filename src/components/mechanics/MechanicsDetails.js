@@ -8,6 +8,7 @@ import {
 } from "../../redux/actions/mechanicActions";
 import { BiDetail } from "react-icons/bi";
 import { getAllOrders } from "../../redux/actions/orderAction";
+import LazyLoad from "react-lazyload";
 
 const MechanicsDetails = () => {
   const { id } = useParams();
@@ -73,11 +74,13 @@ const MechanicsDetails = () => {
               <div className="card">
                 <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
                   {mechanic.image ? (
+                     <LazyLoad height={200} offset={100}>
                     <img
                       src={mechanic.image}
                       alt="mechanic"
                       style={{ width: "360px" }}
                     />
+                    </LazyLoad>
                   ) : (
                     <div
                       style={{

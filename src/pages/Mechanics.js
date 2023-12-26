@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { StyleSheetManager } from "styled-components";
 import CustomModal from "../components/utils/CustomModal";
 import GenericDataTable from "../components/common/reuseable/GenericDataTable";
+import LazyLoad from "react-lazyload";
 
 const Mechanics = () => {
   const apiUrl = config.apiUrl;
@@ -499,6 +500,7 @@ const Mechanics = () => {
                 </Form.Group>
                 <Form.Group controlId="mechanicImage" className="my-4">
                   {newMechanic.image && (
+                     <LazyLoad height={200} offset={100}>
                     <img
                       src={newMechanic.image}
                       alt="Mechanic"
@@ -509,6 +511,7 @@ const Mechanics = () => {
                         marginBottom: "10px",
                       }}
                     />
+                    </LazyLoad>
                   )}
                   <div className="custom-file mx-3">
                     <Form.Control
