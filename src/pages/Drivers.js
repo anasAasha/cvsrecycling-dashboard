@@ -16,7 +16,7 @@ import CustomModal from "../components/utils/CustomModal";
 import GenericDataTable from "../components/common/reuseable/GenericDataTable";
 import TextInput from "../components/common/input/TextInput";
 import FileInput from "../components/common/input/FileInput";
-import LazyLoad from "react-lazyload";
+
 
 const Drivers = () => {
   const apiUrl = config.apiUrl;
@@ -366,7 +366,7 @@ const Drivers = () => {
               </Form.Group>
               <Form.Group className="my-4">
                 {newDriver.image && (
-                   <LazyLoad height={200} offset={100}>
+                  
                   <img
                     src={newDriver.image}
                     alt="item"
@@ -376,8 +376,9 @@ const Drivers = () => {
                       objectFit: "cover",
                       marginBottom: "10px",
                     }}
+                    loading="lazy"
                   />
-                  </LazyLoad>
+                 
                 )}
                 <div className="custom-file mx-2 ">
                   <Form.Control

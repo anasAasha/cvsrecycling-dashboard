@@ -20,7 +20,7 @@ import FileInput from "../components/common/input/FileInput";
 import DropdownSelect from "../components/common/input/DropdownSelect";
 import CustomModal from "../components/utils/CustomModal";
 import GenericDataTable from "../components/common/reuseable/GenericDataTable";
-import LazyLoad from "react-lazyload";
+
 
 const Items = () => {
   const apiUrl = config.apiUrl;
@@ -361,7 +361,7 @@ const Items = () => {
 
               <Form.Group className="my-4">
                 {editedItem.image && (
-                   <LazyLoad height={200} offset={100}>
+                  
                   <img
                     src={editedItem.image}
                     alt="item"
@@ -371,8 +371,9 @@ const Items = () => {
                       objectFit: "cover",
                       marginBottom: "10px",
                     }}
+                    loading="lazy"
                   />
-                  </LazyLoad>
+                 
                 )}
                 <div className="custom-file mx-2 ">
                   <Form.Control
@@ -430,7 +431,7 @@ const Items = () => {
           </Modal.Header>
           <Modal.Body>
             {selectedImage && (
-            <LazyLoad height={200} offset={100}>
+            
             <img
               src={selectedImage}
               alt="Preview"
@@ -440,8 +441,9 @@ const Items = () => {
                 margin: "auto",
                 display: "block",
               }}
+              loading="lazy"
             />
-          </LazyLoad>
+         
             )}
           </Modal.Body>
         </Modal>

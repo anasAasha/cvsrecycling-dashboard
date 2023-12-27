@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { FaTrash } from 'react-icons/fa';
 
 import config from '../../config';
-import LazyLoad from 'react-lazyload';
+
 
 
 const Banner = () => {
@@ -122,9 +122,9 @@ const Banner = () => {
         <Form.Group key={banner.id} className="row mb-3">
           <Form.Label className="col-md-4 col-lg-3">{banner.id}</Form.Label>
           <div className="col-md-8 col-lg-9">
-          <LazyLoad height={200} offset={100}>
-            <img src={banner.image} alt="banner" />
-            </LazyLoad>
+         
+            <img src={banner.image} alt="banner" loading="lazy" />
+           
             <div className="pt-2">
               <Button
                 
