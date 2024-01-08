@@ -15,8 +15,12 @@ export const DELETE_MECHANIC_SUCCESS = 'DELETE_MECHANIC_SUCCESS';
 // Action Creators
 export const fetchMechanicsSuccess = (mechanics) => ({
   type: FETCH_MECHANICS_SUCCESS,
-  payload: mechanics,
+  payload: mechanics.map((mechanic, index) => ({
+    ...mechanic,
+    mechanicNumber: index + 1,
+  })),
 });
+
 
 export const fetchMechanicSuccess = (mechanic) => ({
   type: FETCH_MECHANIC_SUCCESS,

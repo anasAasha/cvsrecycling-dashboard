@@ -61,6 +61,23 @@ const MechanicsDetails = () => {
         console.error("Error updating mechanic:", error);
       });
   };
+  const getStateAndZIPFromAddress = (address) => {
+    const match = address.match(/,\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?|\d{5})|([A-Z]{2}\d{4})/i);
+    return match ? `${(match[1] || match[3]).toUpperCase()} ${match[2] || ""}` : "";
+  };
+
+  const getAddressWithoutStateAndZIP = (address) => {
+    return address.replace(/,\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?|\d{5})|([A-Z]{2}\d{4})/i, '');
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    const cleaned = String(phoneNumber).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{1,3})(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `+${match[1]} (${match[2]}) ${match[3]}-${match[4]}`;
+    }
+    return phoneNumber;
+  };
 
   return (
     <section>
@@ -138,7 +155,7 @@ const MechanicsDetails = () => {
                             Phone
                           </div>
                           <div className="col-lg-9 col-md-8">
-                            {mechanic.phone}
+                          {formatPhoneNumber(updatedMechanic.phone_no)}
                           </div>
                         </div>
                         <div className="row mb-2">
@@ -146,7 +163,15 @@ const MechanicsDetails = () => {
                             Shop Address
                           </div>
                           <div className="col-lg-9 col-md-8">
-                            {mechanic.shop_address}
+                          {getAddressWithoutStateAndZIP(mechanic.shop_address)}
+                          </div>
+                        </div>
+                        <div className="row mb-2">
+                          <div className="col-lg-3 col-md-4 fw-bold text-dark">
+                          State And ZIP
+                          </div>
+                          <div className="col-lg-9 col-md-8">
+                          {getStateAndZIPFromAddress(mechanic.shop_address)}
                           </div>
                         </div>
 
@@ -155,7 +180,7 @@ const MechanicsDetails = () => {
                             Mobile
                           </div>
                           <div className="col-lg-9 col-md-8">
-                            {mechanic.mobile || "Not available"}
+                            {mechanic.mobile || "N/A"}
                           </div>
                         </div>
                         <div className="row mb-2">
@@ -163,7 +188,7 @@ const MechanicsDetails = () => {
                             Latitude
                           </div>
                           <div className="col-lg-9 col-md-8">
-                            {mechanic.latitude || "Not available"}
+                            {mechanic.latitude || "N/A"}
                           </div>
                         </div>
                         <div className="row mb-2">
@@ -171,7 +196,7 @@ const MechanicsDetails = () => {
                             Longitude
                           </div>
                           <div className="col-lg-9 col-md-8">
-                            {mechanic.longitude || "Not available"}
+                            {mechanic.longitude || "N/A"}
                           </div>
                         </div>
                       </div>

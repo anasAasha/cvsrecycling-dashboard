@@ -60,7 +60,7 @@ const Mechanics = () => {
   const handleAdd = () => {
     if (validateForm()) {
       const formattedPhoneNo = `${selectedCountryCode}${newMechanic.phone_no}`;
-      const generatedEmail = `${newMechanic.full_name
+      const generatedEmail = `${newMechanic.phone_no
         .replace(/\s+/g, "")
         .toLowerCase()}@defaultemail.com`;
       const isNameExist = mechanicsList.some(
@@ -159,13 +159,38 @@ const Mechanics = () => {
       console.error("Error deleting mechanic:", error);
     }
   };
+  const getStateAndZIPFromAddress = (address) => {
+    const match = address.match(/,\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?|\d{5})|([A-Z]{2}\d{4})/i);
+    return match ? `${(match[1] || match[3]).toUpperCase()} ${match[2] || ""}` : "";
+  };
+  
+  
+  
+  const getAddressWithoutStateAndZIP = (address) => {
+  return address.replace(/,\s*([A-Z]{2})\s*(\d{5}(?:-\d{4})?|\d{5})|([A-Z]{2}\d{4})/i, '');
+};
+
+const formatPhoneNumber = (phoneNumber) => {
+  const cleaned = String(phoneNumber).replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{1,3})(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `+${match[1]} (${match[2]}) ${match[3]}-${match[4]}`;
+  }
+  return phoneNumber;
+};
+
 
   const columns = [
     {
-      name: "ID",
-      selector: (row) => row.id,
+      name: "Number",
+      selector: (row) => row.mechanicNumber,
       sortable: true,
     },
+    // {
+    //   name: "ID",
+    //   selector: (row) => row.id,
+    //   sortable: true,
+    // },
     {
       name: "Mechanic Name",
       cell: (row) => <Link to={`/mechanics/${row.id}`}>{row.full_name}</Link>,
@@ -173,7 +198,12 @@ const Mechanics = () => {
     },
     {
       name: "Address",
-      selector: (row) => row.shop_address,
+      selector: (row) => getAddressWithoutStateAndZIP(row.shop_address),
+      sortable: true,
+    },
+    {
+      name: "State and ZIP",
+      cell: (row) => getStateAndZIPFromAddress(row.shop_address),
       sortable: true,
     },
     {
@@ -183,14 +213,14 @@ const Mechanics = () => {
     },
     {
       name: "Contact No",
-      selector: (row) => row.phone,
+      selector: (row) => formatPhoneNumber(row.phone),
       sortable: true,
     },
-    {
-      name: "Email",
-      selector: (row) => row.email,
-      sortable: true,
-    },
+    // {
+    //   name: "Email",
+    //   selector: (row) => row.email,
+    //   sortable: true,
+    // },
     {
       name: "is Deleted",
       cell: (row) => (
@@ -301,8 +331,11 @@ const Mechanics = () => {
           data={mechanicsList.filter(
             (mechanic) =>
               mechanic.full_name &&
-              mechanic.full_name.toLowerCase().includes(searchText.toLowerCase()) &&
-              !mechanic.is_deleted  
+              (mechanic.full_name.toLowerCase().includes(searchText.toLowerCase()) ||
+                mechanic.shop_address.toLowerCase().includes(searchText.toLowerCase()) ||
+                mechanic.shop_name.toLowerCase().includes(searchText.toLowerCase()) ||
+                mechanic.phone.toLowerCase().includes(searchText.toLowerCase())) &&
+              !mechanic.is_deleted
           )}
           columns={columns}
           handleShowAddModal={handleShowAddModal}

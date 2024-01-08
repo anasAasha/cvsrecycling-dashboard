@@ -13,6 +13,13 @@ const GenericDataTable = ({
   searchText,
   onSearchChange,
 }) => {
+  // Modify the columns prop to make all columns resizable
+  const resizableColumns = columns.map((column) => ({
+    ...column,
+    grow: 1, // Allow the column to grow when resized
+    minWidth: 100, // Set a minimum width for the column
+  }));
+
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -38,7 +45,7 @@ const GenericDataTable = ({
                   />
                 </div>
               </div>
-              <DataTable columns={columns} data={data} pagination />
+              <DataTable resizableColumns={true} columns={resizableColumns} data={data} pagination />
             </div>
           </div>
         </div>
